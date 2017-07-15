@@ -50,18 +50,18 @@ public class Parser {
                     reduceToVerbPhrase();
                 }else if(current.getType().equals(WordType.UNDEFINED) && isArticle(current.getWord())){
                     current.setType(WordType.ARTICLE);
-                    parseTree.add(0, new Word(current));
+                    parseTree.add( new Word(current));
                 }else if(current.getType().equals(WordType.UNDEFINED) && isNoun(current.getWord())){
                     current.setType(WordType.NOUN);
-                    parseTree.add(0, new Word(current));
+                    parseTree.add(new Word(current));
                 }else if(current.getType().equals(WordType.UNDEFINED) && isVerb(current.getWord())){
                     current.setType(WordType.VERB);
-                    parseTree.add(0, new Word(current));
+                    parseTree.add(new Word(current));
                 }else if(nextStackItem != null && isPreposition(nextStackItem.getWord()) && current.getType().equals(WordType.NOUNPHRASE)) {
                     reduceToPreposition();
                 }else{
                     if(isPreposition(current.getWord()))
-                        parseTree.add(0, current);
+                        parseTree.add(current);
                     canReduce = false;
                 }
             }
@@ -91,37 +91,37 @@ public class Parser {
         Word verb = parseStack.pop();
         Word nounPhrase = parseStack.pop();
         parseStack.push(new Word(nounPhrase.getWord() + " " + verb.getWord(), WordType.VERBPHRASE));
-        parseTree.add(0, parseStack.peek());
+        parseTree.add(parseStack.peek());
     }
     private void reduceToPreposition(){
         Word preposition = parseStack.pop();
         Word nounPhrase = parseStack.pop();
 
         parseStack.push(new Word(preposition.getWord() + " " + nounPhrase.getWord(), WordType.PREPOSITION));
-        parseTree.add(0, parseStack.peek());
+        parseTree.add( parseStack.peek());
     }
     private void reduceVToVerbPhrase(){
         parseStack.peek().setType(WordType.VERBPHRASE);
-        parseTree.add(0, parseStack.peek());
+        parseTree.add( parseStack.peek());
     }
     private void reduceANPToNounPhrase(){
         Word preposition = parseStack.pop();
         Word noun = parseStack.pop();
         Word article = parseStack.pop();
         parseStack.push(new Word(article.getWord() + " " + noun.getWord() + " " + preposition.getWord(), WordType.NOUNPHRASE));
-        parseTree.add(0, parseStack.peek());
+        parseTree.add( parseStack.peek());
     }
     private void reduceANToNounPhrase(){
         Word noun = parseStack.pop();
         Word article = parseStack.pop();
         parseStack.push(new Word(article.getWord() + " " + noun.getWord(), WordType.NOUNPHRASE));
-        parseTree.add(0, parseStack.peek());
+        parseTree.add(parseStack.peek());
     }
     private void reduceToSentence(){
         Word verbPhrase = parseStack.pop();
         Word nounPhrase = parseStack.pop();
         parseStack.push(new Word(nounPhrase.getWord() +" " + verbPhrase.getWord(), WordType.SENTENCE));
-        parseTree.add(0, parseStack.peek());
+        parseTree.add(parseStack.peek());
     }
     private Word getNextStackItem(){
         Stack<Word> tempStack = new Stack<>();
@@ -168,7 +168,7 @@ public class Parser {
         return lookAhead;
     }
 
-    public Stack<Word> getParseStack() {
-        return parseStack;
+    public ArrayList<Word> getParseTree() {
+        return parseTree;
     }
 }

@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class Program {
     public void run(){
         Parser parser = new Parser();
+        Generator gen = new Generator();
         Tokenizer tokenizer = new Tokenizer();
         System.out.println("Welcome to chat bot!");
         String input;
@@ -13,7 +14,12 @@ public class Program {
         while(true){
             input = scan.nextLine();
             boolean isValid = parser.parse(tokenizer.tokenize(input));
-            System.out.println(isValid? "Is Valid" : "Is not Valid");
+            if(isValid){
+                gen.generate(parser.getParseTree());
+                System.out.println("I did something and didn't throw an exception. YAY!");
+            }else{
+                System.out.println("Still invalid input boi");
+            }
         }
     }
 }
