@@ -1,9 +1,13 @@
+import java.util.Random;
 import java.util.Scanner;
 
 /**
  * Created by Mary on 7/13/2017.
  */
 public class Program {
+
+    protected static Random rand = new Random();
+
     public void run(){
         Parser parser = new Parser();
         Generator gen = new Generator();
@@ -15,11 +19,18 @@ public class Program {
             input = scan.nextLine();
             boolean isValid = parser.parse(tokenizer.tokenize(input));
             if(isValid){
-                gen.generate(parser.getParseTree());
-                System.out.println("I did something and didn't throw an exception. YAY!");
+               gen.generateResponse(gen.generateTree(parser.getParseTree()));
             }else{
-                System.out.println("Still invalid input boi");
+               printInvalidResponse();
             }
         }
+    }
+    private String[] invalidResponses = {
+            "That seems interesting. Tell me more?",
+            "Alright now, don't go getting ahead of yourself!",
+            "That doesn't interest me. Lets talk about Trash-Pandas!"
+    };
+    private void printInvalidResponse(){
+        System.out.println(invalidResponses[rand.nextInt(invalidResponses.length)]);
     }
 }

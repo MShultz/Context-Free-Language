@@ -21,10 +21,6 @@ public class Node {
         this.type = type;
     }
 
-    public Node(){
-        children = new ArrayList<>();
-    }
-
     public void setParent(Node parent) {
         this.parent = parent;
     }
@@ -39,5 +35,39 @@ public class Node {
 
     public WordType getType() {
         return type;
+    }
+
+    public void print(){
+         if (children == null){
+            System.out.println(word);
+        }else{
+            for(Node child: children){
+                child.print();
+            }
+        }
+    }
+
+    public void printResponse(){
+        if (children == null){
+            transformWord();
+        }else{
+            for(Node child: children){
+                child.printResponse();
+            }
+        }
+    }
+
+    private void transformWord(){
+        String temp;
+        if(type.equals(WordType.ARTICLE)){
+            temp = Generator.articleReplacements[Program.rand.nextInt(2)];
+        }else if(type.equals(WordType.VERB)){
+            temp = word;
+            temp = temp.substring(0, temp.length()-1);
+            temp += (temp.charAt(temp.length()-1) == 'e')? "d" : "ed";
+        }else{
+           temp = word;
+        }
+        System.out.print(" " + temp);
     }
 }

@@ -6,8 +6,10 @@ import java.util.Iterator;
  */
 public class Generator {
     private ArrayList<Node> nodes = new ArrayList<>();
+    protected static String[] articleReplacements = {"this", "that"};
+    private String[] starters = {"Does it make you happy that", "Wasn't it quite interesting when", "Shouldn't we be worried that"};
 
-    public Node generate(ArrayList<Word> words) {
+    public Node generateTree(ArrayList<Word> words) {
         nodes.clear();
         Word current;
         WordType currentType;
@@ -29,6 +31,12 @@ public class Generator {
         return nodes.get(nodes.size() - 1);
     }
 
+    public void generateResponse(Node sentence){
+        System.out.print(starters[Program.rand.nextInt(starters.length)]);
+        sentence.printResponse();
+        System.out.println("?");
+    }
+
     private void handleNP(int i) {
         Node np = new Node(WordType.NOUNPHRASE);
         nodes.add(np);
@@ -45,14 +53,15 @@ public class Generator {
     private void handleVP(int i) {
         Node vp = new Node(WordType.VERBPHRASE);
         nodes.add(vp);
+        Node v = getPreviousVerb(i);
+        v.setParent(vp);
+        vp.addChild(v);
         if (isNP(getPrevious(i).getType())) {
             Node np = getPrevious(i);
             np.setParent(vp);
             vp.addChild(np);
         }
-        Node v = getPreviousVerb(i);
-        v.setParent(vp);
-        vp.addChild(v);
+
     }
 
     private void handlePrep(int i) {
@@ -81,8 +90,8 @@ public class Generator {
         Node vp = getPreviousVerbPhrase(i);
         Node np = getPreviousNP(i);
 
-        sentence.addChild(vp);
         sentence.addChild(np);
+        sentence.addChild(vp);
         vp.setParent(sentence);
         np.setParent(sentence);
     }

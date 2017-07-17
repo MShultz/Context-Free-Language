@@ -77,7 +77,7 @@ public class Parser {
     }
 
     private boolean isNoun(String input){
-        return (input.equals("Netflix") || input.equals("Trash-Panda") || input.equals("Danger-Noodle") || input.equals("games") || input.equals("television"));
+        return (input.equals("Netflix") || input.equals("Trash-Panda") || input.equals("Danger-Noodle") || input.equals("game") || input.equals("television"));
     }
 
     private boolean isVerb(String input){
