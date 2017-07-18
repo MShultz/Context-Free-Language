@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Created by Mary on 7/14/2017.
@@ -60,7 +61,7 @@ public class Node {
     private void transformWord(){
         String temp;
         if(type.equals(WordType.ARTICLE)){
-            temp = Generator.articleReplacements[Program.rand.nextInt(2)];
+            temp = Generator.articleReplacements[Generator.rand.nextInt(2)];
         }else if(type.equals(WordType.VERB)){
             temp = word;
             temp = temp.substring(0, temp.length()-1);
@@ -69,5 +70,31 @@ public class Node {
            temp = word;
         }
         System.out.print(" " + temp);
+    }
+
+    @Override
+    public String toString() {
+        if (children == null){
+            return word;
+        }else{
+            String result = "";
+            for(Node child: children){
+                result += child.toString() + " ";
+            }
+            return result;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return Objects.equals(this.toString(), node.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.toString());
     }
 }

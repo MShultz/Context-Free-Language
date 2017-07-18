@@ -1,13 +1,24 @@
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Created by Mary on 7/14/2017.
  */
 public class Generator {
+
+    private KVP currentTree;
     private ArrayList<Node> nodes = new ArrayList<>();
+    private ArrayList<KVP> treeHistory = new ArrayList<>();
+    protected static Random rand = new Random();
     protected static String[] articleReplacements = {"this", "that"};
     private String[] starters = {"Does it make you happy that", "Wasn't it quite interesting when", "Shouldn't we be worried that"};
+    private final int TOTAL_STARTERS = 3;
+    private String[] invalidResponses = {
+            "That seems interesting. Tell me more?",
+            "Alright now, don't go getting ahead of yourself!",
+            "That doesn't interest me. Lets talk about Trash-Pandas!"
+    };
 
     public Node generateTree(ArrayList<Word> words) {
         nodes.clear();
@@ -31,10 +42,18 @@ public class Generator {
         return nodes.get(nodes.size() - 1);
     }
 
-    public void generateResponse(Node sentence){
-        System.out.print(starters[Program.rand.nextInt(starters.length)]);
-        sentence.printResponse();
+    public void generateResponse() {
+
+        System.out.print(starters[determineStarter(currentTree)]);
+        currentTree.getKey().printResponse();
         System.out.println("?");
+    }
+
+    protected void generateInvalidResponse() {
+        if (!printInvalidStarter()) {
+            currentTree.getKey().printResponse();
+            System.out.println("?");
+        }
     }
 
     private void handleNP(int i) {
@@ -211,4 +230,47 @@ public class Generator {
     }
 
 
+    public void setCurrentTree(Node currentTree) {
+        KVP pair = new KVP(currentTree, 0);
+        if (!treeHistory.contains(pair)) {
+            treeHistory.add(pair);
+        } else {
+            pair = treeHistory.get(treeHistory.indexOf(pair));
+            pair.incrementValue();
+        }
+        this.currentTree = pair;
+    }
+
+    private int determineStarter(KVP current) {
+        if (current.getValue() >= TOTAL_STARTERS) {
+            current.resetValue();
+            return 0;
+        } else {
+            return current.getValue();
+        }
+    }
+
+    private boolean printInvalidStarter() {
+        if (currentTree != null) {
+            currentTree.incrementValue();
+            boolean used = currentTree.getValue() >= TOTAL_STARTERS;
+            int count = treeHistory.size() - 1;
+            while (used && count > 0){
+                if (used = currentTree.getValue() >= TOTAL_STARTERS) {
+                    --count;
+                    currentTree = treeHistory.get(count);
+
+                }
+            }
+            if (!used) {
+                System.out.print(starters[currentTree.getValue()]);
+            } else {
+                System.out.println(invalidResponses[rand.nextInt(invalidResponses.length)]);
+            }
+            return used;
+        } else {
+            System.out.println(invalidResponses[rand.nextInt(invalidResponses.length)]);
+            return true;
+        }
+    }
 }
